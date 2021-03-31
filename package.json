@@ -1,0 +1,53 @@
+{
+  "name": "peffect-bookmarks-manager",
+  "version": "0.0.1",
+  "description": "The Chrome bookmarks manager you were waiting for.",
+  "scripts": {
+    "build": "webpack --config webpack.prod.js",
+    "dev": "webpack --config webpack.dev.js",
+    "watch": "webpack -w --config webpack.dev.js",
+    "serve": "webpack serve --config webpack.dev.js",
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
+    "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
+  },
+  "author": "Christian Toscano",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/chrome": "^0.0.128",
+    "@types/jest": "^26.0.20",
+    "@types/lodash": "^4.14.168",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/react-redux": "^7.1.16",
+    "@types/react-window": "^1.8.2",
+    "@typescript-eslint/eslint-plugin": "^4.14.0",
+    "@typescript-eslint/parser": "^4.14.0",
+    "@webpack-cli/serve": "^1.2.2",
+    "css-loader": "^5.0.1",
+    "eslint": "^7.18.0",
+    "eslint-plugin-react": "^7.22.0",
+    "jest": "^26.6.3",
+    "node-sass": "^5.0.0",
+    "sass-loader": "^10.1.1",
+    "serve": "^11.3.2",
+    "style-loader": "^2.0.0",
+    "ts-loader": "^8.0.14",
+    "typescript": "^4.1.3",
+    "webpack": "^4.46.0",
+    "webpack-cli": "^4.4.0",
+    "webpack-dev-server": "^3.11.2",
+    "webpack-merge": "^4.2.2"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^2.1.0",
+    "@material-ui/core": "^4.11.2",
+    "@material-ui/icons": "^4.11.2",
+    "@reduxjs/toolkit": "^1.5.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-hot-toast": "^1.0.2",
+    "react-redux": "^7.2.2",
+    "react-use": "^15.3.8",
+    "redux": "^4.0.5"
+  }
+}

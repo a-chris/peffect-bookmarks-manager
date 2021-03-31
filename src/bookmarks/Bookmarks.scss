@@ -1,0 +1,36 @@
+body {
+  margin: 0px;
+  // hides overflow while dragging items
+  overflow: hidden;
+}
+
+.bookmarks-container {
+  display: flex;
+  height: calc(100vh - 64px);
+
+  .left-panel,
+  .right-panel {
+    width: 50%;
+    height: 100%;
+    overflow-y: auto;
+    padding: 24px;
+  }
+
+  .divider {
+    width: 2px;
+    height: 100%;
+  }
+
+  .node-header {
+    display: flex;
+    align-items: center;
+
+    button {
+      margin-left: 10px;
+    }
+  }
+
+  .folder {
+    margin-left: 36px;
+  }
+}

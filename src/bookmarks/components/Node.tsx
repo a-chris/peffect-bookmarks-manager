@@ -28,14 +28,18 @@ import StyledMenu from './StyledMenu';
 
 const useStyles = makeStyles(() =>
   createStyles({
-    list_item_dense: {
-      paddingTop: 0,
-      paddingBottom: 0,
-    },
-    list_item_text: {
+    list_item: {
       whiteSpace: 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
+      '&:hover': {
+        // turn off the "selected" effect on hover
+        backgroundColor: 'inherit',
+      },
+    },
+    list_item_title: {
+      paddingTop: 0,
+      paddingBottom: 0,
       '&:hover': {
         color: red[300],
       },
@@ -98,7 +102,7 @@ function NodeFolder({ node, isOpen, isOver, isRoot, onOpen }: BookmarkProps): JS
   const hasChildren = node.children?.length != null && node.children.length > 0;
 
   return (
-    <ListItem button divider disableGutters selected={isOver} className={styles.list_item_text}>
+    <ListItem button divider disableGutters selected={isOver} className={styles.list_item}>
       <IconButton
         onClick={onOpen}
         disabled={!hasChildren}
@@ -109,7 +113,7 @@ function NodeFolder({ node, isOpen, isOver, isRoot, onOpen }: BookmarkProps): JS
       <ListItemIcon>
         <FolderIcon />
       </ListItemIcon>
-      <ListItemText primary={node.title} />
+      <ListItemText className={styles.list_item_title} primary={node.title} />
       <BookmarkMenu node={node} nodeType={isRoot ? 'root_folder' : 'folder'} />
     </ListItem>
   );
@@ -121,11 +125,11 @@ function NodeLink({ node, isOver }: BookmarkProps): JSX.Element {
   return (
     <>
       {isOver && <div className={styles.over_link_divider} />}
-      <ListItem button disableGutters className={styles.list_item_dense}>
+      <ListItem button disableGutters className={styles.list_item}>
         {/* <Checkbox color="primary" inputProps={{ 'aria-label': 'secondary checkbox' }} /> */}
         <StyledAvatar node={node} />
         <ListItemText
-          className={styles.list_item_text}
+          className={styles.list_item_title}
           primary={node.title}
           secondary={
             node.url ? (

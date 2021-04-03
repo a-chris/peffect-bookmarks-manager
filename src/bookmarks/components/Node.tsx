@@ -1,11 +1,14 @@
-import { Link, Tooltip } from '@material-ui/core';
+import {
+  IconButton,
+  Link,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Tooltip,
+  Typography,
+} from '@material-ui/core';
 import { indigo, red } from '@material-ui/core/colors';
-import IconButton from '@material-ui/core/IconButton';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
 import FolderIcon from '@material-ui/icons/Folder';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
@@ -63,14 +66,19 @@ export default function Node({ node, suffix, isRoot }: NodeWithSuffixProps): JSX
         {node.url ? (
           <NodeLink isOver={false} node={node} suffix={suffix} />
         ) : (
-          <Droppable id={uniqueId} droppableChildren={(isOver) => <NodeFolder
-            node={node}
-            suffix={suffix}
-            isRoot={isRoot}
-            isOpen={isOpen}
-            isOver={isOver}
-            onOpen={handleOpen}
-          />}/>
+          <Droppable
+            id={uniqueId}
+            droppableChildren={(isOver) => (
+              <NodeFolder
+                node={node}
+                suffix={suffix}
+                isRoot={isRoot}
+                isOpen={isOpen}
+                isOver={isOver}
+                onOpen={handleOpen}
+              />
+            )}
+          />
         )}
       </Draggable>
       {isOpen && hasChildren && (
@@ -183,10 +191,10 @@ function BookmarkMenu({ node, nodeType }: BookmarkMenuProps) {
   }, [node]);
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', paddingRight: '10px' }}>
       {nodeType !== 'link' && (
         <Tooltip title="Sort children">
-          <IconButton onClick={handleSortChildren}>
+          <IconButton size="small" onClick={handleSortChildren}>
             <SortIcon />
           </IconButton>
         </Tooltip>

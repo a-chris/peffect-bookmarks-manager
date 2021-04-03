@@ -7,9 +7,14 @@ import {
   EditOperation,
   MoveOperation,
   Operation,
-  SortChildrenOperation
+  SortChildrenOperation,
 } from '../types/operations';
-import { flatDeepNode, flatDeepNodeNoProxy, sortNodesByName } from '../utils/nodeUtils';
+import {
+  flatDeepNode,
+  flatDeepNodeNoProxy,
+  sortChildrenByNameAndMove,
+  sortNodesByName,
+} from '../utils/nodeUtils';
 import { unboxProxy } from '../utils/proxyUtils';
 
 export interface BookmarksStore {
@@ -44,7 +49,7 @@ const bookmarksSlice = createSlice({
           (n) => n.id === destinationArgs.parentId,
         )?.title;
 
-        // move the node if the destination folder is different than the current one that already contains it
+        // move the node if the destination folder is different than its current parent folder
         if (node.parentId === destinationArgs.parentId) {
           toast.error(`${node.title} is already in ${destinationFolderTitle}.`);
         } else {
@@ -102,22 +107,28 @@ const bookmarksSlice = createSlice({
     sortChildren(state, action: PayloadAction<SortChildrenOperation>) {
       console.log('sortChildren', JSON.stringify(action));
       const { node } = action.payload;
-      const flatNodeList = flatDeepNode(state.nodes);
-      const parentNode = flatNodeList.find((n) => n.id === node.id);
-      if (parentNode != null) {
-        const children = parentNode.children?.map(unboxProxy) || [];
-        const sortedChildren = sortNodesByName(children);
-        sortedChildren.forEach((child, cIndex) => {
-          child.index = cIndex;
-          const childObj = unboxProxy(child);
-          const destinationArgs = { parentId: node.id, index: cIndex };
-          const op = new MoveOperation(childObj, destinationArgs);
 
-          // state.operationsQueue.push(moveOperation);
-          move(op.node.id, op.destinationArgs);
-        });
-        toast.success(`Sorted ${node.title}.`);
-      }
+      const children = node.children?.map(unboxProxy) || [];
+      const sortedChildren = sortNodesByName(children);
+      sortedChildren.forEach((child, cIndex) => {
+        child.index = cIndex;
+        const destinationArgs = { parentId: node.id, index: cIndex };
+        // unboxing proxy to access this object fields
+        const childObj = unboxProxy(child);
+
+        // const op = new MoveOperation(childObj, destinationArgs);
+        // state.operationsQueue.push(moveOperation);
+        move(childObj.id, destinationArgs);
+      });
+      toast.success(`Sorted ${node.title}.`);
+    },
+
+    recursiveSortChildren(state, action: PayloadAction<SortChildrenOperation>) {
+      console.log('recursiveSortChildren', JSON.stringify(action));
+      const { node } = action.payload;
+
+      sortChildrenByNameAndMove(node);
+      toast.success(`Recursively sorted ${node.title} and all its children.`);
     },
 
     applyOperations(state) {
@@ -143,6 +154,7 @@ export const {
   deleteNode,
   editNode,
   sortChildren,
+  recursiveSortChildren,
   applyOperations,
 } = bookmarksSlice.actions;
 export default bookmarksSlice;

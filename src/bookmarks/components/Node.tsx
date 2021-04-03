@@ -15,7 +15,7 @@ import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import SortIcon from '@material-ui/icons/Sort';
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { deleteNode, sortChildren } from '../../redux/bookmarksSlice';
+import { deleteNode, recursiveSortChildren, sortChildren } from '../../redux/bookmarksSlice';
 import store, { RootStore } from '../../redux/store';
 import { openCreateDialog, openEditDialog, toggleFolderOpen } from '../../redux/viewSlice';
 import { BookmarkProps, NodeWithSuffixProps } from '../../types/interfaces';
@@ -171,6 +171,11 @@ function BookmarkMenu({ node, nodeType }: BookmarkMenuProps) {
     store.dispatch(sortChildren(sortChildrenOperation));
   }, []);
 
+  const handleRecursiveSortChildren = useCallback(() => {
+    const sortChildrenOperation = new SortChildrenOperation(node);
+    store.dispatch(recursiveSortChildren(sortChildrenOperation));
+  }, []);
+
   const menuItems = useMemo(() => {
     const options = [];
     if (nodeType !== 'root_folder') {
@@ -184,6 +189,10 @@ function BookmarkMenu({ node, nodeType }: BookmarkMenuProps) {
         {
           text: 'Sort children by name',
           onClick: handleSortChildren,
+        },
+        {
+          text: 'Recursive sort children by name',
+          onClick: handleRecursiveSortChildren,
         },
         {
           text: 'Create folder',

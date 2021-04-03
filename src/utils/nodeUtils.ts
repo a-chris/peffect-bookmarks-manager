@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { move } from '../chrome/bookmarks';
 import { unboxProxy } from './proxyUtils';
 
 export function moveDeepNode(
@@ -73,6 +74,14 @@ export function findParentsIds(
   return parentsIds;
 }
 
+/**
+ * Apply an alphabetical-descent and case insensitive order
+ * to this nodes and return the sorted list.
+ * Folder has higher priority than links.
+ *
+ * @param nodes
+ * @returns the sorted nodes list
+ */
 export function sortNodesByName(
   nodes: chrome.bookmarks.BookmarkTreeNode[],
 ): chrome.bookmarks.BookmarkTreeNode[] {
@@ -80,4 +89,32 @@ export function sortNodesByName(
   const sortedFolders = _.sortBy(folders, (n) => n.title.toLowerCase());
   const sortedLinks = _.sortBy(links, (n) => n.title.toLowerCase());
   return [...sortedFolders, ...sortedLinks];
+}
+
+/**
+ * Apply an alphabetical-descent and case insensitive order
+ * to this node and it's children recursively.
+ * Folder has higher priority than links.
+ *
+ * TODO: returns a flat list of the nodes with id and destinationArgs,
+ * so that we can put the move(..) method away from here?
+ *
+ * @param node
+ */
+export function sortChildrenByNameAndMove(node: chrome.bookmarks.BookmarkTreeNode): void {
+  const children = node.children?.map(unboxProxy) || [];
+  const sortedChildren = sortNodesByName(children);
+  sortedChildren.forEach((child, cIndex) => {
+    child.index = cIndex;
+    const destinationArgs = { parentId: node.id, index: cIndex };
+
+    // unboxing proxy to access this object fields
+
+    const childObj = unboxProxy(child);
+
+    move(childObj.id, destinationArgs);
+
+    // recursively apply this function to this node's children
+    sortChildrenByNameAndMove(child);
+  });
 }

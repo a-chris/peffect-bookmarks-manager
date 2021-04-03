@@ -11,6 +11,10 @@ export interface DragWrapperProps {
   id: string;
   children: React.ReactNode;
 }
+export interface DropWrapperProps {
+  id: string;
+  droppableChildren: (isOver: boolean) => React.ReactNode;
+}
 export interface BookmarkProps extends NodeWithSuffixProps {
   isOpen?: boolean;
   isOver?: boolean;

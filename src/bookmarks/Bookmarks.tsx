@@ -4,7 +4,7 @@ import {
   DragStartEvent,
   MouseSensor,
   useSensor,
-  useSensors,
+  useSensors
 } from '@dnd-kit/core';
 import { Container, CssBaseline, Paper, ThemeProvider } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
@@ -31,7 +31,7 @@ import Node from './components/Node';
 import NodeCreateDialog from './components/NodeCreateDialog';
 import NodeEditDialog from './components/NodeEditDialog';
 import ThemeSwitcher from './components/ThemeSwticher';
-import DraggedOverlay from './dnd/DragOverlay';
+import DraggedOverlay from './dnd/DraggedOverlay';
 
 const debouncedGetTree = _.debounce(() => {
   console.warn('getTree called');
@@ -84,7 +84,7 @@ export default function Bookmarks(): JSX.Element {
   }, []);
 
   const mouseSensor = useSensor(MouseSensor, {
-    activationConstraint: { delay: 200, tolerance: 10 },
+    activationConstraint: { delay: 200, tolerance: 50 },
   });
 
   // TODO: add other sensors

@@ -1,9 +1,9 @@
 import { useDroppable } from '@dnd-kit/core';
 import React from 'react';
-import { DragWrapperProps } from '../../types/interfaces';
+import { DropWrapperProps } from '../../types/interfaces';
 
-export default function Droppable({ id, children }: DragWrapperProps): JSX.Element {
-  const { setNodeRef } = useDroppable({ id });
+export default function Droppable({ id, droppableChildren }: DropWrapperProps): JSX.Element {
+  const { isOver, setNodeRef } = useDroppable({ id });
 
-  return <div ref={setNodeRef}>{children}</div>;
+  return <div ref={setNodeRef}>{droppableChildren(isOver)}</div>;
 }

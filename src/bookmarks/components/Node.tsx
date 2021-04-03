@@ -63,16 +63,14 @@ export default function Node({ node, suffix, isRoot }: NodeWithSuffixProps): JSX
         {node.url ? (
           <NodeLink isOver={false} node={node} suffix={suffix} />
         ) : (
-          <Droppable id={uniqueId}>
-            <NodeFolder
-              node={node}
-              suffix={suffix}
-              isOver={false}
-              isRoot={isRoot}
-              isOpen={isOpen}
-              onOpen={handleOpen}
-            />
-          </Droppable>
+          <Droppable id={uniqueId} droppableChildren={(isOver) => <NodeFolder
+            node={node}
+            suffix={suffix}
+            isRoot={isRoot}
+            isOpen={isOpen}
+            isOver={isOver}
+            onOpen={handleOpen}
+          />}/>
         )}
       </Draggable>
       {isOpen && hasChildren && (

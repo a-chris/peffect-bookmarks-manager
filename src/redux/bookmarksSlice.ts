@@ -7,7 +7,7 @@ import {
   EditOperation,
   MoveOperation,
   Operation,
-  SortChildrenOperation,
+  SortChildrenOperation
 } from '../types/operations';
 import { flatDeepNode, flatDeepNodeNoProxy, sortNodesByName } from '../utils/nodeUtils';
 import { unboxProxy } from '../utils/proxyUtils';
@@ -44,9 +44,14 @@ const bookmarksSlice = createSlice({
           (n) => n.id === destinationArgs.parentId,
         )?.title;
 
-        move(node.id, destinationArgs).then(() => {
-          toast.success(`${node.title} moved in ${destinationFolderTitle}.`);
-        });
+        // move the node if the destination folder is different than the current one that already contains it
+        if (node.parentId === destinationArgs.parentId) {
+          toast.error(`${node.title} is already in ${destinationFolderTitle}.`);
+        } else {
+          move(node.id, destinationArgs)
+            .then(() => toast.success(`${node.title} moved in ${destinationFolderTitle}.`))
+            .catch(() => toast.error(`Error while moving ${node.title}.`));
+        }
       }
     },
 

@@ -13,9 +13,8 @@ import {
   flatDeepNode,
   flatDeepNodeNoProxy,
   sortChildrenByNameAndMove,
-  sortNodesByName,
+  sortNodeChildrenByName,
 } from '../utils/nodeUtils';
-import { unboxProxy } from '../utils/proxyUtils';
 
 export interface BookmarksStore {
   nodes: chrome.bookmarks.BookmarkTreeNode[];
@@ -72,8 +71,6 @@ const bookmarksSlice = createSlice({
     deleteNode(state, action: PayloadAction<DeleteOperation>) {
       console.log('deleteNode', JSON.stringify(action));
       const { node } = action.payload;
-      // state.operationsQueue.push(action.payload);
-      // deleteDeepNode(state.nodes, node);
 
       if (node.url == null) {
         // is a folder
@@ -86,6 +83,9 @@ const bookmarksSlice = createSlice({
           toast.success(`${node.title || 'Link'} deleted.`);
         });
       }
+
+      // state.operationsQueue.push(action.payload);
+      // deleteDeepNode(state.nodes, node);
     },
 
     editNode(state, action: PayloadAction<EditOperation>) {
@@ -99,28 +99,23 @@ const bookmarksSlice = createSlice({
         nodeToUpdate.url = url;
       }
 
-      // state.operationsQueue.push(action.payload);
       update(node.id, changesArgs);
       toast.success(`${changesArgs.title || 'Link'} updated.`);
+
+      // state.operationsQueue.push(action.payload);
     },
 
     sortChildren(state, action: PayloadAction<SortChildrenOperation>) {
       console.log('sortChildren', JSON.stringify(action));
       const { node } = action.payload;
 
-      const children = node.children?.map(unboxProxy) || [];
-      const sortedChildren = sortNodesByName(children);
-      sortedChildren.forEach((child, cIndex) => {
-        child.index = cIndex;
-        const destinationArgs = { parentId: node.id, index: cIndex };
-        // unboxing proxy to access this object fields
-        const childObj = unboxProxy(child);
-
-        // const op = new MoveOperation(childObj, destinationArgs);
-        // state.operationsQueue.push(moveOperation);
-        move(childObj.id, destinationArgs);
-      });
-      toast.success(`Sorted ${node.title}.`);
+      Promise.all(
+        sortNodeChildrenByName(node).map(async (moveOperation) => {
+          return await move(moveOperation.node.id, moveOperation.destinationArgs);
+        }),
+      )
+        .then(() => toast.success(`Sorted ${node.title}.`))
+        .catch(() => toast.error(`Error while sorting ${node.title}.`));
     },
 
     recursiveSortChildren(state, action: PayloadAction<SortChildrenOperation>) {

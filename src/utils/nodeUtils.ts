@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { move } from '../chrome/bookmarks';
+import { MoveOperation } from '../types/operations';
 import { unboxProxy } from './proxyUtils';
 
 export function moveDeepNode(
@@ -77,7 +78,7 @@ export function findParentsIds(
 /**
  * Apply an alphabetical-descent and case insensitive order
  * to this nodes and return the sorted list.
- * Folder has higher priority than links.
+ * Folders have higher priority over links.
  *
  * @param nodes
  * @returns the sorted nodes list
@@ -94,7 +95,7 @@ export function sortNodesByName(
 /**
  * Apply an alphabetical-descent and case insensitive order
  * to this node and it's children recursively.
- * Folder has higher priority than links.
+ * Folders have higher priority over links.
  *
  * TODO: returns a flat list of the nodes with id and destinationArgs,
  * so that we can put the move(..) method away from here?
@@ -102,19 +103,30 @@ export function sortNodesByName(
  * @param node
  */
 export function sortChildrenByNameAndMove(node: chrome.bookmarks.BookmarkTreeNode): void {
+  sortNodeChildrenByName(node).forEach((moveOperation) => {
+    move(moveOperation.node.id, moveOperation.destinationArgs);
+
+    // recursively apply this function to this node's children
+    sortChildrenByNameAndMove(moveOperation.node);
+  });
+}
+
+/**
+ * Apply an alphabetical-descent and case insensitive order.
+ *
+ * @param node
+ * @returns list of MoveOperations to be applied to sort the node's children
+ */
+export function sortNodeChildrenByName(node: chrome.bookmarks.BookmarkTreeNode): MoveOperation[] {
   const children = node.children?.map(unboxProxy) || [];
   const sortedChildren = sortNodesByName(children);
-  sortedChildren.forEach((child, cIndex) => {
+  return sortedChildren.map((child, cIndex) => {
     child.index = cIndex;
     const destinationArgs = { parentId: node.id, index: cIndex };
 
     // unboxing proxy to access this object fields
-
     const childObj = unboxProxy(child);
 
-    move(childObj.id, destinationArgs);
-
-    // recursively apply this function to this node's children
-    sortChildrenByNameAndMove(child);
+    return new MoveOperation(childObj, destinationArgs);
   });
 }

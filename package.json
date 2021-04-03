@@ -39,15 +39,15 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "@dnd-kit/core": "^2.1.0",
-    "@material-ui/core": "^4.11.2",
+    "@dnd-kit/core": "^2.1.2",
+    "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
     "@reduxjs/toolkit": "^1.5.0",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "react-hot-toast": "^1.0.2",
-    "react-redux": "^7.2.2",
-    "react-use": "^15.3.8",
+    "react-redux": "^7.2.3",
+    "react-use": "^17.2.1",
     "redux": "^4.0.5"
   }
 }

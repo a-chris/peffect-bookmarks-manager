@@ -27,8 +27,7 @@ import { darkTheme, lightTheme } from '../style/themes';
 import { MoveOperation } from '../types/operations';
 import { extractId } from '../utils/dndUtils';
 import './Bookmarks.scss';
-import NodeCreateDialog from './components/dialogs/NodeCreateDialog';
-import NodeEditDialog from './components/dialogs/NodeEditDialog';
+import NodeDialog from './components/dialogs/NodeDialog';
 import Node from './components/Node';
 import ThemeSwitcher from './components/ThemeSwticher';
 import DraggedOverlay from './dnd/DraggedOverlay';
@@ -139,8 +138,7 @@ export default function Bookmarks(): JSX.Element {
     <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
       <CssBaseline />
 
-      <NodeEditDialog />
-      <NodeCreateDialog />
+      <NodeDialog />
 
       {appBar}
 

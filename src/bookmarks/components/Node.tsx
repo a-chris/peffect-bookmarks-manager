@@ -17,7 +17,7 @@ import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { deleteNode, recursiveSortChildren, sortChildren } from '../../redux/bookmarksSlice';
 import store, { RootStore } from '../../redux/store';
-import { openCreateDialog, openEditDialog, toggleFolderOpen } from '../../redux/viewSlice';
+import { setNodeDialog, toggleFolderOpen } from '../../redux/viewSlice';
 import { BookmarkProps, NodeWithSuffixProps } from '../../types/interfaces';
 import { DeleteOperation, SortChildrenOperation } from '../../types/operations';
 import { generateUniqueId } from '../../utils/dndUtils';
@@ -153,17 +153,17 @@ interface BookmarkMenuProps {
 }
 
 function BookmarkMenu({ node, nodeType }: BookmarkMenuProps) {
-  const handleCreate = useCallback((type) => {
-    store.dispatch(openCreateDialog({ isOpen: true, parentId: node.id, type }));
+  const handleOpenNodeModal = useCallback((mode, type) => {
+    const nodeToUpdate = mode === 'update' ? node : undefined;
+    store.dispatch(
+      setNodeDialog({ isOpen: true, mode, type, parentId: node.id, node: nodeToUpdate }),
+    );
   }, []);
 
-  const handleDelete = useCallback(() => {
+  const handleDeleteNode = useCallback(() => {
+    // TODO: open dialog to confirm
     const deleteOperation = new DeleteOperation(node);
     store.dispatch(deleteNode(deleteOperation));
-  }, [node]);
-
-  const handleEdit = useCallback(() => {
-    store.dispatch(openEditDialog({ isOpen: true, node }));
   }, [node]);
 
   const handleSortChildren = useCallback(() => {
@@ -180,19 +180,19 @@ function BookmarkMenu({ node, nodeType }: BookmarkMenuProps) {
     const options = [];
     if (nodeType !== 'root_folder') {
       options.push(
-        { text: 'Edit', onClick: handleEdit },
-        { text: 'Delete', onClick: handleDelete },
+        { text: 'Edit', onClick: handleOpenNodeModal('update', nodeType) },
+        { text: 'Delete', onClick: handleDeleteNode },
       );
     }
-    if (nodeType !== 'link') {
+    if (nodeType === 'folder') {
       options.push(
         {
           text: 'Create folder',
-          onClick: () => handleCreate('folder'),
+          onClick: () => handleOpenNodeModal('create', 'folder'),
         },
         {
           text: 'Create link',
-          onClick: () => handleCreate('link'),
+          onClick: () => handleOpenNodeModal('create', 'link'),
         },
         {
           text: 'Sort children by name',

@@ -1,12 +1,12 @@
 import { Button, DialogActions, DialogContent, TextField } from '@material-ui/core';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { createNode } from '../../../redux/bookmarksSlice';
+import { createNode, editNode } from '../../../redux/bookmarksSlice';
 import store, { RootStore } from '../../../redux/store';
-import { openCreateDialog } from '../../../redux/viewSlice';
-import { CreateOperation } from '../../../types/operations';
+import { setNodeDialog } from '../../../redux/viewSlice';
+import { CreateOperation, EditOperation } from '../../../types/operations';
 import BaseDialog from './BaseDialog';
 
 const useStyles = makeStyles(() =>
@@ -23,12 +23,18 @@ const useStyles = makeStyles(() =>
 
 const EMPTY_EDITING_DATA = { title: '', url: '' };
 
-export default function NodeCreateDialog(): JSX.Element {
+export default function NodeDialog(): JSX.Element {
   const styles = useStyles();
-  const { isOpen, parentId, type } = useSelector((state: RootStore) => state.view.createDialog);
+  const { isOpen, mode, parentId, type, node } = useSelector(
+    (state: RootStore) => state.view.createDialog,
+  );
 
   const [inputData, setInputData] = useState(EMPTY_EDITING_DATA);
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
+
+  const handleResetState = () => {
+    setInputData(EMPTY_EDITING_DATA);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -36,14 +42,23 @@ export default function NodeCreateDialog(): JSX.Element {
   };
 
   const handleClose = () => {
-    store.dispatch(openCreateDialog({ isOpen: false, parentId: '' }));
+    store.dispatch(setNodeDialog({ isOpen: false }));
   };
 
   const handleSave = () => {
-    const createArgs = { parentId, index: 0, title: inputData.title, url: inputData.url };
-    const createOperation = new CreateOperation(createArgs);
-    if (validate()) {
+    if (mode === 'create' && validate()) {
+      const createArgs = { parentId, index: 0, title: inputData.title, url: inputData.url };
+      const createOperation = new CreateOperation(createArgs);
       store.dispatch(createNode(createOperation));
+      handleClose();
+    } else if (mode === 'update' && node != null && validate()) {
+      const changes = { title: inputData.title, url: '' };
+      if (node.url) {
+        // then this is a link
+        changes.url = inputData.url;
+      }
+      const editOperation = new EditOperation(node, changes);
+      store.dispatch(editNode(editOperation));
       handleClose();
     }
   };
@@ -58,9 +73,15 @@ export default function NodeCreateDialog(): JSX.Element {
     }
   };
 
+  const title = useMemo(() => {
+    const operation = mode === 'update' ? 'Edit' : 'Create new';
+    const nodeType = type === 'folder' ? 'folder' : 'link';
+    return `${operation} ${nodeType}`;
+  }, []);
+
   return (
-    <BaseDialog isOpen={isOpen} onClose={handleClose}>
-      <DialogTitle>{`Create new ${type === 'folder' ? 'folder' : 'link'}`}</DialogTitle>
+    <BaseDialog isOpen={isOpen} onClose={handleClose} onExited={handleResetState}>
+      <DialogTitle>{title}</DialogTitle>
       <DialogContent className={styles.input_container}>
         <TextField
           required

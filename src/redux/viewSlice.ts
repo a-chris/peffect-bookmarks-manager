@@ -14,8 +14,10 @@ interface EditDialog {
 
 interface CreateDialog {
   isOpen: boolean;
-  parentId: string;
+  mode?: 'create' | 'update';
   type?: 'folder' | 'link';
+  parentId?: string;
+  node?: chrome.bookmarks.BookmarkTreeNode;
 }
 
 interface OpenFolder {
@@ -62,15 +64,9 @@ const viewSlice = createSlice({
       }
     },
 
-    openCreateDialog(state, action: PayloadAction<CreateDialog>) {
+    setNodeDialog(state, action: PayloadAction<CreateDialog>) {
       console.log('TCL ~ file: viewSlice.ts ~ line 66 ~ action', action);
       state.createDialog = action.payload;
-    },
-
-    openEditDialog(state, action: PayloadAction<EditDialog>) {
-      console.log('TCL ~ file: viewSlice.ts ~ line 71 ~ action', action);
-      state.editDialog.isOpen = action.payload.isOpen;
-      state.editDialog.node = action.payload.node || null;
     },
   },
 });
@@ -78,8 +74,7 @@ const viewSlice = createSlice({
 export const {
   restorePreviousTheme,
   toggleTheme,
-  openCreateDialog,
-  openEditDialog,
+  setNodeDialog,
   toggleFolderOpen,
 } = viewSlice.actions;
 export default viewSlice;

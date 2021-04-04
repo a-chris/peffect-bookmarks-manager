@@ -153,8 +153,8 @@ interface BookmarkMenuProps {
 }
 
 function BookmarkMenu({ node, nodeType }: BookmarkMenuProps) {
-  const handleCreate = useCallback(() => {
-    store.dispatch(openCreateDialog({ isOpen: true, parentId: node.id }));
+  const handleCreate = useCallback((type) => {
+    store.dispatch(openCreateDialog({ isOpen: true, parentId: node.id, type }));
   }, []);
 
   const handleDelete = useCallback(() => {
@@ -187,16 +187,20 @@ function BookmarkMenu({ node, nodeType }: BookmarkMenuProps) {
     if (nodeType !== 'link') {
       options.push(
         {
+          text: 'Create folder',
+          onClick: () => handleCreate('folder'),
+        },
+        {
+          text: 'Create link',
+          onClick: () => handleCreate('link'),
+        },
+        {
           text: 'Sort children by name',
           onClick: handleSortChildren,
         },
         {
           text: 'Recursive sort children by name',
           onClick: handleRecursiveSortChildren,
-        },
-        {
-          text: 'Create folder',
-          onClick: handleCreate,
         },
       );
     }

@@ -1,13 +1,13 @@
 import { Button, DialogActions, DialogContent, TextField } from '@material-ui/core';
-import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { createNode } from '../../redux/bookmarksSlice';
-import store, { RootStore } from '../../redux/store';
-import { openCreateDialog } from '../../redux/viewSlice';
-import { CreateOperation } from '../../types/operations';
+import { editNode } from '../../../redux/bookmarksSlice';
+import store, { RootStore } from '../../../redux/store';
+import { openEditDialog } from '../../../redux/viewSlice';
+import { EditOperation } from '../../../types/operations';
+import BaseDialog from './BaseDialog';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -23,11 +23,17 @@ const useStyles = makeStyles(() =>
 
 const EMPTY_EDITING_DATA = { title: '', url: '' };
 
-export default function NodeCreateDialog(): JSX.Element {
+export default function NodeEditDialog(): JSX.Element {
   const styles = useStyles();
-  const { isOpen, parentId } = useSelector((state: RootStore) => state.view.createDialog);
+  const { isOpen, node } = useSelector((state: RootStore) => state.view.editDialog);
 
   const [editingData, setEditingData] = useState(EMPTY_EDITING_DATA);
+
+  React.useEffect(() => {
+    if (node != null) {
+      setEditingData({ title: node.title, url: node.url || '' });
+    }
+  }, [node]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -35,18 +41,24 @@ export default function NodeCreateDialog(): JSX.Element {
   };
 
   const handleClose = () => {
-    store.dispatch(openCreateDialog({ isOpen: false, parentId: '' }));
+    store.dispatch(openEditDialog({ isOpen: false, node: null }));
   };
 
   const handleSave = () => {
-    const createArgs = { parentId, index: 0, title: editingData.title };
-    const createOperation = new CreateOperation(createArgs);
-    store.dispatch(createNode(createOperation));
-    handleClose();
+    if (node != null) {
+      const changes = { title: editingData.title, url: '' };
+      if (node.url) {
+        // then this is a link
+        changes.url = editingData.url;
+      }
+      const editOperation = new EditOperation(node, changes);
+      store.dispatch(editNode(editOperation));
+      handleClose();
+    }
   };
 
   return (
-    <Dialog fullWidth open={isOpen} onClose={handleClose}>
+    <BaseDialog isOpen={isOpen} onClose={handleClose}>
       <DialogTitle>Edit bookmark</DialogTitle>
       <DialogContent className={styles.input_container}>
         <TextField
@@ -57,7 +69,7 @@ export default function NodeCreateDialog(): JSX.Element {
           value={editingData.title}
           onChange={handleChange}
         />
-        {/* {node?.url && (
+        {node?.url && (
           <TextField
             label="URL"
             variant="filled"
@@ -66,7 +78,7 @@ export default function NodeCreateDialog(): JSX.Element {
             value={editingData.url}
             onChange={handleChange}
           />
-        )} */}
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary" variant="text">
@@ -76,6 +88,6 @@ export default function NodeCreateDialog(): JSX.Element {
           Save
         </Button>
       </DialogActions>
-    </Dialog>
+    </BaseDialog>
   );
 }

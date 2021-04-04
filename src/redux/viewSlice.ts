@@ -15,6 +15,7 @@ interface EditDialog {
 interface CreateDialog {
   isOpen: boolean;
   parentId: string;
+  type?: 'folder' | 'link';
 }
 
 interface OpenFolder {
@@ -54,7 +55,7 @@ const viewSlice = createSlice({
     },
 
     toggleFolderOpen(state, action: PayloadAction<OpenFolder>) {
-      console.log(action);
+      console.log('TCL ~ file: viewSlice.ts ~ line 58 ~ action', action);
       if (action.payload.uniqueId != null) {
         if (action.payload.isOpen) state.foldersOpen.add(action.payload.uniqueId);
         else state.foldersOpen.delete(action.payload.uniqueId);
@@ -62,13 +63,12 @@ const viewSlice = createSlice({
     },
 
     openCreateDialog(state, action: PayloadAction<CreateDialog>) {
-      console.log(action);
-      state.createDialog.isOpen = action.payload.isOpen;
-      state.createDialog.parentId = action.payload.parentId;
+      console.log('TCL ~ file: viewSlice.ts ~ line 66 ~ action', action);
+      state.createDialog = action.payload;
     },
 
     openEditDialog(state, action: PayloadAction<EditDialog>) {
-      console.log(action);
+      console.log('TCL ~ file: viewSlice.ts ~ line 71 ~ action', action);
       state.editDialog.isOpen = action.payload.isOpen;
       state.editDialog.node = action.payload.node || null;
     },

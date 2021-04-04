@@ -4,7 +4,7 @@ import {
   DragStartEvent,
   MouseSensor,
   useSensor,
-  useSensors
+  useSensors,
 } from '@dnd-kit/core';
 import { Container, CssBaseline, Paper, ThemeProvider } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
@@ -27,9 +27,9 @@ import { darkTheme, lightTheme } from '../style/themes';
 import { MoveOperation } from '../types/operations';
 import { extractId } from '../utils/dndUtils';
 import './Bookmarks.scss';
+import NodeCreateDialog from './components/dialogs/NodeCreateDialog';
+import NodeEditDialog from './components/dialogs/NodeEditDialog';
 import Node from './components/Node';
-import NodeCreateDialog from './components/NodeCreateDialog';
-import NodeEditDialog from './components/NodeEditDialog';
 import ThemeSwitcher from './components/ThemeSwticher';
 import DraggedOverlay from './dnd/DraggedOverlay';
 
@@ -57,27 +57,27 @@ export default function Bookmarks(): JSX.Element {
   useEffect(() => {
     /* TODO: Find a solution, this is called for each children re-sorted */
     chrome.bookmarks.onCreated.addListener((id, newNode) => {
-      console.log(id);
+      console.log('TCL ~ file: Bookmarks.tsx ~ line 60 ~ id', id);
       console.log(JSON.stringify(newNode));
       debouncedGetTree();
     });
     chrome.bookmarks.onMoved.addListener((id, moveInfo) => {
-      console.log(id);
+      console.log('TCL ~ file: Bookmarks.tsx ~ line 65 ~ id', id);
       console.log(JSON.stringify(moveInfo));
       debouncedGetTree();
     });
     chrome.bookmarks.onChanged.addListener((id, changeInfo) => {
-      console.log(id);
+      console.log('TCL ~ file: Bookmarks.tsx ~ line 70 ~ id', id);
       console.log(JSON.stringify(changeInfo));
       debouncedGetTree();
     });
     chrome.bookmarks.onChildrenReordered.addListener((id, reorderInfo) => {
-      console.log(id);
+      console.log('TCL ~ file: Bookmarks.tsx ~ line 75 ~ id', id);
       console.log(JSON.stringify(reorderInfo));
       debouncedGetTree();
     });
     chrome.bookmarks.onRemoved.addListener((id, removeInfo) => {
-      console.log(id);
+      console.log('TCL ~ file: Bookmarks.tsx ~ line 81 ~ id', id);
       console.log(JSON.stringify(removeInfo));
       debouncedGetTree();
     });

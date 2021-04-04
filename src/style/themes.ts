@@ -18,6 +18,19 @@ export const darkTheme = createMuiTheme({
     type: 'dark',
     primary,
   },
+  overrides: {
+    ...commonTheme.overrides,
+    MuiFormLabel: {
+      focused: {},
+      root: {
+        color: 'white',
+        '&$focused': {
+          color: 'white',
+          fontWeight: 'bold',
+        },
+      },
+    },
+  },
 });
 
 export const lightTheme = createMuiTheme({

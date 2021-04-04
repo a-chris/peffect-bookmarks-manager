@@ -3,18 +3,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 export interface ViewStore {
   theme: 'light' | 'dark';
   foldersOpen: Set<string>;
-  editDialog: EditDialog;
-  createDialog: CreateDialog;
+  nodeDialog: NodeDialog;
 }
 
-interface EditDialog {
+interface NodeDialog {
   isOpen: boolean;
-  node: chrome.bookmarks.BookmarkTreeNode | null;
-}
-
-interface CreateDialog {
-  isOpen: boolean;
-  mode?: 'create' | 'update';
+  mode?: 'create' | 'update' | 'delete';
   type?: 'folder' | 'link';
   parentId?: string;
   node?: chrome.bookmarks.BookmarkTreeNode;
@@ -28,13 +22,8 @@ interface OpenFolder {
 const initialState = {
   theme: 'light',
   foldersOpen: new Set(),
-  editDialog: {
+  nodeDialog: {
     isOpen: false,
-    node: null,
-  },
-  createDialog: {
-    isOpen: false,
-    parentId: '',
   },
 } as ViewStore;
 
@@ -64,9 +53,9 @@ const viewSlice = createSlice({
       }
     },
 
-    setNodeDialog(state, action: PayloadAction<CreateDialog>) {
+    setNodeDialog(state, action: PayloadAction<NodeDialog>) {
       console.log('TCL ~ file: viewSlice.ts ~ line 66 ~ action', action);
-      state.createDialog = action.payload;
+      state.nodeDialog = action.payload;
     },
   },
 });

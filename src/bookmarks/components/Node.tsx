@@ -15,11 +15,11 @@ import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import SortIcon from '@material-ui/icons/Sort';
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { deleteNode, recursiveSortChildren, sortChildren } from '../../redux/bookmarksSlice';
+import { recursiveSortChildren, sortChildren } from '../../redux/bookmarksSlice';
 import store, { RootStore } from '../../redux/store';
 import { setNodeDialog, toggleFolderOpen } from '../../redux/viewSlice';
 import { BookmarkProps, NodeWithSuffixProps } from '../../types/interfaces';
-import { DeleteOperation, SortChildrenOperation } from '../../types/operations';
+import { SortChildrenOperation } from '../../types/operations';
 import { generateUniqueId } from '../../utils/dndUtils';
 import Draggable from '../dnd/Draggable';
 import Droppable from '../dnd/Droppable';
@@ -160,12 +160,6 @@ function BookmarkMenu({ node, nodeType }: BookmarkMenuProps) {
     );
   }, []);
 
-  const handleDeleteNode = useCallback(() => {
-    // TODO: open dialog to confirm
-    const deleteOperation = new DeleteOperation(node);
-    store.dispatch(deleteNode(deleteOperation));
-  }, [node]);
-
   const handleSortChildren = useCallback(() => {
     const sortChildrenOperation = new SortChildrenOperation(node);
     store.dispatch(sortChildren(sortChildrenOperation));
@@ -178,13 +172,13 @@ function BookmarkMenu({ node, nodeType }: BookmarkMenuProps) {
 
   const menuItems = useMemo(() => {
     const options = [];
-    if (nodeType !== 'root_folder') {
+    if (nodeType === 'folder' || nodeType === 'link') {
       options.push(
-        { text: 'Edit', onClick: handleOpenNodeModal('update', nodeType) },
-        { text: 'Delete', onClick: handleDeleteNode },
+        { text: 'Edit', onClick: () => handleOpenNodeModal('update', nodeType) },
+        { text: 'Delete', onClick: () => handleOpenNodeModal('delete', nodeType) },
       );
     }
-    if (nodeType === 'folder') {
+    if (nodeType === 'folder' || nodeType === 'root_folder') {
       options.push(
         {
           text: 'Create folder',

@@ -3,9 +3,9 @@ import React from 'react';
 
 interface BaseDialogProps {
   isOpen: boolean;
-  onClose: () => void;
-  onExited: () => void;
   children: React.ReactNode;
+  onClose: () => void;
+  onExited?: () => void;
 }
 
 export default function BaseDialog({

@@ -17,7 +17,7 @@ import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { recursiveSortChildren, sortChildren } from '../../redux/bookmarksSlice';
 import store, { RootStore } from '../../redux/store';
-import { setNodeDialog, toggleFolderOpen } from '../../redux/viewSlice';
+import { setMoveToDialog, setNodeDialog, toggleFolderOpen } from '../../redux/viewSlice';
 import { BookmarkProps, NodeWithSuffixProps } from '../../types/interfaces';
 import { SortChildrenOperation } from '../../types/operations';
 import { generateUniqueId } from '../../utils/dndUtils';
@@ -170,12 +170,17 @@ function BookmarkMenu({ node, nodeType }: BookmarkMenuProps) {
     store.dispatch(recursiveSortChildren(sortChildrenOperation));
   }, []);
 
+  const handleMoveTo = useCallback(() => {
+    store.dispatch(setMoveToDialog({ isOpen: true, node }));
+  }, []);
+
   const menuItems = useMemo(() => {
     const options = [];
     if (nodeType === 'folder' || nodeType === 'link') {
       options.push(
         { text: 'Edit', onClick: () => handleOpenNodeModal('update', nodeType) },
         { text: 'Delete', onClick: () => handleOpenNodeModal('delete', nodeType) },
+        { text: 'Move to', onClick: handleMoveTo },
       );
     }
     if (nodeType === 'folder' || nodeType === 'root_folder') {

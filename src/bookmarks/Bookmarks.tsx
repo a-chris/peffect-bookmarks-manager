@@ -27,6 +27,7 @@ import { darkTheme, lightTheme } from '../style/themes';
 import { MoveOperation } from '../types/operations';
 import { extractId } from '../utils/dndUtils';
 import './Bookmarks.scss';
+import MoveToDialog from './components/dialogs/MoveToDialog';
 import NodeDialog from './components/dialogs/NodeDialog';
 import Node from './components/Node';
 import ThemeSwitcher from './components/ThemeSwticher';
@@ -139,6 +140,7 @@ export default function Bookmarks(): JSX.Element {
       <CssBaseline />
 
       <NodeDialog />
+      <MoveToDialog />
 
       {appBar}
 

@@ -60,7 +60,7 @@ export default function Node({ node, suffix, isRoot }: NodeWithSuffixProps): JSX
 
   const handleOpen = useCallback(() => {
     store.dispatch(toggleFolderOpen({ isOpen: !isOpen, uniqueId }));
-  }, [isOpen]);
+  }, [isOpen, uniqueId]);
 
   const hasChildren = node.children?.length != null && node.children.length > 0;
 
@@ -153,26 +153,29 @@ interface BookmarkMenuProps {
 }
 
 function BookmarkMenu({ node, nodeType }: BookmarkMenuProps) {
-  const handleOpenNodeModal = useCallback((mode, type) => {
-    const nodeToUpdate = mode === 'update' ? node : undefined;
-    store.dispatch(
-      setNodeDialog({ isOpen: true, mode, type, parentId: node.id, node: nodeToUpdate }),
-    );
-  }, []);
+  const handleOpenNodeModal = useCallback(
+    (mode, type) => {
+      const nodeToUpdate = mode === 'update' || mode === 'delete' ? node : undefined;
+      store.dispatch(
+        setNodeDialog({ isOpen: true, mode, type, parentId: node.id, node: nodeToUpdate }),
+      );
+    },
+    [node],
+  );
 
   const handleSortChildren = useCallback(() => {
     const sortChildrenOperation = new SortChildrenOperation(node);
     store.dispatch(sortChildren(sortChildrenOperation));
-  }, []);
+  }, [node]);
 
   const handleRecursiveSortChildren = useCallback(() => {
     const sortChildrenOperation = new SortChildrenOperation(node);
     store.dispatch(recursiveSortChildren(sortChildrenOperation));
-  }, []);
+  }, [node]);
 
   const handleMoveTo = useCallback(() => {
     store.dispatch(setMoveToDialog({ isOpen: true, node }));
-  }, []);
+  }, [node]);
 
   const menuItems = useMemo(() => {
     const options = [];
@@ -204,7 +207,13 @@ function BookmarkMenu({ node, nodeType }: BookmarkMenuProps) {
       );
     }
     return options;
-  }, [node]);
+  }, [
+    handleMoveTo,
+    handleOpenNodeModal,
+    handleRecursiveSortChildren,
+    handleSortChildren,
+    nodeType,
+  ]);
 
   return (
     <div style={{ display: 'flex', paddingRight: '10px' }}>

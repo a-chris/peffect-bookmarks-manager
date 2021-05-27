@@ -30,7 +30,7 @@ import './Bookmarks.scss';
 import MoveToDialog from './components/dialogs/MoveToDialog';
 import NodeDialog from './components/dialogs/NodeDialog';
 import Node from './components/Node';
-import ThemeSwitcher from './components/ThemeSwticher';
+import ThemeSwitcher from './components/ThemeSwitcher';
 import DraggedOverlay from './dnd/DraggedOverlay';
 
 const debouncedGetTree = _.debounce(() => {

@@ -1,14 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import MoveToDialog from '../bookmarks/components/dialogs/MoveToDialog';
+import MoveToDialogData from '../bookmarks/components/dialogs/MoveToDialog';
 
 export interface ViewStore {
   theme: 'light' | 'dark';
   foldersOpen: Set<string>;
-  nodeDialog: NodeDialog;
-  moveToDialog: MoveToDialog;
+  nodeDialog: NodeDialogData;
+  moveToDialog: MoveToDialogData;
 }
 
-interface NodeDialog {
+interface NodeDialogData {
   isOpen: boolean;
   mode?: 'create' | 'update' | 'delete';
   type?: 'folder' | 'link';
@@ -16,12 +16,12 @@ interface NodeDialog {
   node?: chrome.bookmarks.BookmarkTreeNode;
 }
 
-interface MoveToDialog {
+interface MoveToDialogData {
   isOpen: boolean;
   node?: chrome.bookmarks.BookmarkTreeNode;
 }
 
-interface OpenFolder {
+interface OpenFolderData {
   isOpen: boolean;
   uniqueId: string;
 }
@@ -55,7 +55,7 @@ const viewSlice = createSlice({
       localStorage.setItem('theme', state.theme);
     },
 
-    toggleFolderOpen(state, action: PayloadAction<OpenFolder>) {
+    toggleFolderOpen(state, action: PayloadAction<OpenFolderData>) {
       console.log('TCL ~ file: viewSlice.ts ~ line 58 ~ action', action);
       if (action.payload.uniqueId != null) {
         if (action.payload.isOpen) state.foldersOpen.add(action.payload.uniqueId);
@@ -63,12 +63,12 @@ const viewSlice = createSlice({
       }
     },
 
-    setNodeDialog(state, action: PayloadAction<NodeDialog>) {
+    setNodeDialog(state, action: PayloadAction<NodeDialogData>) {
       console.log('TCL ~ file: viewSlice.ts ~ line 66 ~ action', action);
       state.nodeDialog = action.payload;
     },
 
-    setMoveToDialog(state, action: PayloadAction<MoveToDialog>) {
+    setMoveToDialog(state, action: PayloadAction<MoveToDialogData>) {
       console.log('TCL ~ file: viewSlice.ts ~ line 66 ~ action', action);
       state.moveToDialog = action.payload;
     },

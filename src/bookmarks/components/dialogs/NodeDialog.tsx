@@ -7,6 +7,7 @@ import { createNode, deleteNode, editNode } from '../../../redux/bookmarksSlice'
 import store, { RootStore } from '../../../redux/store';
 import { setNodeDialog } from '../../../redux/viewSlice';
 import { CreateOperation, DeleteOperation, EditOperation } from '../../../types/operations';
+import log from '../../../utils/log';
 import BaseDialog from './BaseDialog';
 
 const useStyles = makeStyles(() =>
@@ -27,6 +28,14 @@ export default function NodeDialog(): JSX.Element {
   const styles = useStyles();
   const { isOpen, mode, parentId, type, node } = useSelector(
     (state: RootStore) => state.view.nodeDialog,
+  );
+  console.log(
+    'TCL ~ file: NodeDialog.tsx ~ line 30 ~ isOpen, mode, parentId, type, node',
+    isOpen,
+    mode,
+    parentId,
+    type,
+    node,
   );
 
   const [inputData, setInputData] = useState(EMPTY_EDITING_DATA);
@@ -53,11 +62,13 @@ export default function NodeDialog(): JSX.Element {
 
   const handleConfirm = () => {
     if (mode === 'create' && validate()) {
+      log('handleConfirm: create');
       const createArgs = { parentId, index: 0, title: inputData.title, url: inputData.url };
       const createOperation = new CreateOperation(createArgs);
       store.dispatch(createNode(createOperation));
       handleClose();
     } else if (mode === 'update' && node != null && validate()) {
+      log('handleConfirm: update');
       const changes = { title: inputData.title, url: '' };
       if (node.url) {
         // then this is a link
@@ -67,6 +78,7 @@ export default function NodeDialog(): JSX.Element {
       store.dispatch(editNode(editOperation));
       handleClose();
     } else if (mode === 'delete' && node != null) {
+      log('handleConfirm: delete');
       const deleteOperation = new DeleteOperation(node);
       store.dispatch(deleteNode(deleteOperation));
       handleClose();
@@ -74,17 +86,38 @@ export default function NodeDialog(): JSX.Element {
   };
 
   const validate = () => {
-    if (!inputData.url.startsWith('http://') && !inputData.url.startsWith('https://')) {
-      setErrors((curr) => ({ ...curr, url: 'Url must starts with http:// or https://' }));
-      return false;
+    let isValid = false;
+    if (type === 'link') {
+      if (!inputData.url.startsWith('http://') && !inputData.url.startsWith('https://')) {
+        setErrors((curr) => ({ ...curr, url: 'Url must starts with http:// or https://' }));
+        isValid = false;
+      } else {
+        setErrors((curr) => ({ ...curr, url: undefined }));
+        isValid = true;
+      }
     } else {
-      setErrors((curr) => ({ ...curr, url: undefined }));
-      return true;
+      isValid = true;
     }
+    console.log('validate: isValid', isValid);
+    return isValid;
   };
 
   const title = useMemo(() => {
-    const operation = mode === 'update' ? 'Edit' : 'Create new';
+    let operation = '';
+    switch (mode) {
+      case 'update':
+        operation = 'Edit';
+        break;
+      case 'create':
+        operation = 'Create new';
+        break;
+      case 'delete':
+        operation = 'Delete';
+        break;
+      default:
+        operation = 'Unknown operation';
+        break;
+    }
     const nodeType = type === 'folder' ? 'folder' : 'link';
     return `${operation} ${nodeType}`;
   }, []);

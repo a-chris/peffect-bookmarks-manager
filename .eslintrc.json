@@ -3,7 +3,12 @@
     "browser": true,
     "es6": true
   },
-  "extends": ["plugin:react/recommended", "plugin:@typescript-eslint/recommended"],
+  "extends": [
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
+    "plugin:react-hooks/recommended"
+  ],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
@@ -16,7 +21,7 @@
     "ecmaVersion": 2019,
     "sourceType": "module"
   },
-  "plugins": ["react", "@typescript-eslint"],
+  "plugins": ["react", "react-hooks", "@typescript-eslint"],
   "settings": {
     "react": {
       "version": "detect"

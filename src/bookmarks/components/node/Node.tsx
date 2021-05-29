@@ -4,7 +4,6 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Tooltip,
   Typography,
 } from '@material-ui/core';
 import { indigo, red } from '@material-ui/core/colors';
@@ -12,19 +11,16 @@ import { createStyles, makeStyles } from '@material-ui/core/styles';
 import FolderIcon from '@material-ui/icons/Folder';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-import SortIcon from '@material-ui/icons/Sort';
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { recursiveSortChildren, sortChildren } from '../../redux/bookmarksSlice';
-import store, { RootStore } from '../../redux/store';
-import { setMoveToDialog, setNodeDialog, toggleFolderOpen } from '../../redux/viewSlice';
-import { BookmarkProps, NodeWithSuffixProps } from '../../types/interfaces';
-import { SortChildrenOperation } from '../../types/operations';
-import { generateUniqueId } from '../../utils/dndUtils';
-import Draggable from '../dnd/Draggable';
-import Droppable from '../dnd/Droppable';
-import StyledAvatar from './StyledAvatar';
-import StyledMenu from './StyledMenu';
+import store, { RootStore } from '../../../redux/store';
+import { toggleFolderOpen } from '../../../redux/viewSlice';
+import { BookmarkProps, NodeDndProps } from '../../../types/interfaces';
+import { generateUniqueId } from '../../../utils/dndUtils';
+import Draggable from '../../dnd/Draggable';
+import Droppable from '../../dnd/Droppable';
+import StyledAvatar from '../StyledAvatar';
+import BookmarkMenu from './BookmarkMenu';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -51,7 +47,13 @@ const useStyles = makeStyles(() =>
   }),
 );
 
-export default function Node({ node, suffix, isRoot }: NodeWithSuffixProps): JSX.Element {
+export default function Node({
+  node,
+  suffix,
+  isRoot,
+  isDroppable,
+  isDraggable,
+}: NodeDndProps): JSX.Element {
   const { foldersOpen } = useSelector((state: RootStore) => state.view);
 
   const uniqueId = useMemo(() => generateUniqueId(node.id, suffix), [node.id, suffix]);
@@ -66,12 +68,13 @@ export default function Node({ node, suffix, isRoot }: NodeWithSuffixProps): JSX
 
   return (
     <div>
-      <Draggable id={uniqueId}>
+      <Draggable id={uniqueId} isDraggable={isDraggable}>
         {node.url ? (
           <NodeLink isOver={false} node={node} suffix={suffix} />
         ) : (
           <Droppable
             id={uniqueId}
+            isDroppable={isDroppable}
             droppableChildren={(isOver) => (
               <NodeFolder
                 node={node}
@@ -88,7 +91,13 @@ export default function Node({ node, suffix, isRoot }: NodeWithSuffixProps): JSX
       {isOpen && hasChildren && (
         <div className="folder">
           {node.children?.map((n) => (
-            <Node node={n} key={n.id} suffix={suffix} />
+            <Node
+              node={n}
+              key={n.id}
+              suffix={suffix}
+              isDroppable={isDroppable}
+              isDraggable={isDraggable}
+            />
           ))}
         </div>
       )}
@@ -144,87 +153,5 @@ function NodeLink({ node, isOver }: BookmarkProps): JSX.Element {
         <BookmarkMenu node={node} nodeType="link" />
       </ListItem>
     </>
-  );
-}
-
-interface BookmarkMenuProps {
-  node: chrome.bookmarks.BookmarkTreeNode;
-  nodeType: 'root_folder' | 'folder' | 'link';
-}
-
-function BookmarkMenu({ node, nodeType }: BookmarkMenuProps) {
-  const handleOpenNodeModal = useCallback(
-    (mode, type) => {
-      const nodeToUpdate = mode === 'update' || mode === 'delete' ? node : undefined;
-      store.dispatch(
-        setNodeDialog({ isOpen: true, mode, type, parentId: node.id, node: nodeToUpdate }),
-      );
-    },
-    [node],
-  );
-
-  const handleSortChildren = useCallback(() => {
-    const sortChildrenOperation = new SortChildrenOperation(node);
-    store.dispatch(sortChildren(sortChildrenOperation));
-  }, [node]);
-
-  const handleRecursiveSortChildren = useCallback(() => {
-    const sortChildrenOperation = new SortChildrenOperation(node);
-    store.dispatch(recursiveSortChildren(sortChildrenOperation));
-  }, [node]);
-
-  const handleMoveTo = useCallback(() => {
-    store.dispatch(setMoveToDialog({ isOpen: true, node }));
-  }, [node]);
-
-  const menuItems = useMemo(() => {
-    const options = [];
-    if (nodeType === 'folder' || nodeType === 'link') {
-      options.push(
-        { text: 'Edit', onClick: () => handleOpenNodeModal('update', nodeType) },
-        { text: 'Delete', onClick: () => handleOpenNodeModal('delete', nodeType) },
-        { text: 'Move to', onClick: handleMoveTo },
-      );
-    }
-    if (nodeType === 'folder' || nodeType === 'root_folder') {
-      options.push(
-        {
-          text: 'Create folder',
-          onClick: () => handleOpenNodeModal('create', 'folder'),
-        },
-        {
-          text: 'Create link',
-          onClick: () => handleOpenNodeModal('create', 'link'),
-        },
-        {
-          text: 'Sort children by name',
-          onClick: handleSortChildren,
-        },
-        {
-          text: 'Recursive sort children by name',
-          onClick: handleRecursiveSortChildren,
-        },
-      );
-    }
-    return options;
-  }, [
-    handleMoveTo,
-    handleOpenNodeModal,
-    handleRecursiveSortChildren,
-    handleSortChildren,
-    nodeType,
-  ]);
-
-  return (
-    <div style={{ display: 'flex', paddingRight: '10px' }}>
-      {nodeType !== 'link' && (
-        <Tooltip title="Sort children">
-          <IconButton size="small" onClick={handleSortChildren}>
-            <SortIcon />
-          </IconButton>
-        </Tooltip>
-      )}
-      <StyledMenu items={menuItems} />
-    </div>
   );
 }

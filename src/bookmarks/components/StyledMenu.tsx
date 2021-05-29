@@ -1,6 +1,6 @@
 import { IconButton, Menu, MenuItem } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
 interface MenuItemProps {
   text: string;
@@ -13,9 +13,9 @@ interface MenuProps {
 }
 
 export default function StyledMenu({ items }: MenuProps): JSX.Element {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const toggleMenu = React.useCallback((e) => {
+  const toggleMenu = useCallback((e) => {
     setAnchorEl((curr) => (curr == null ? e?.currentTarget : null));
   }, []);
 

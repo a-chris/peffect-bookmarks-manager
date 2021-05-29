@@ -2,17 +2,23 @@ import {
   DndContext,
   DragEndEvent,
   DragStartEvent,
+  LayoutMeasuringStrategy,
   MouseSensor,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import { Container, CssBaseline, Paper, ThemeProvider } from '@material-ui/core';
-import AppBar from '@material-ui/core/AppBar';
-import Box from '@material-ui/core/Box';
-import IconButton from '@material-ui/core/IconButton';
-import List from '@material-ui/core/List';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
+import {
+  AppBar,
+  Box,
+  Container,
+  CssBaseline,
+  IconButton,
+  List,
+  Paper,
+  ThemeProvider,
+  Toolbar,
+  Typography,
+} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import _ from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -28,8 +34,8 @@ import { MoveOperation } from '../types/operations';
 import { extractId } from '../utils/dndUtils';
 import './Bookmarks.scss';
 import MoveToDialog from './components/dialogs/MoveToDialog';
-import NodeDialog from './components/dialogs/NodeDialog';
-import Node from './components/Node';
+import NodeCrudDialog from './components/dialogs/NodeCrudDialog';
+import Node from './components/node/Node';
 import ThemeSwitcher from './components/ThemeSwitcher';
 import DraggedOverlay from './dnd/DraggedOverlay';
 
@@ -57,27 +63,27 @@ export default function Bookmarks(): JSX.Element {
   useEffect(() => {
     /* TODO: Find a solution, this is called for each children re-sorted */
     chrome.bookmarks.onCreated.addListener((id, newNode) => {
-      console.log('TCL ~ file: Bookmarks.tsx ~ line 60 ~ id', id);
+      console.log('chrome.bookmarks.onCreated', id);
       console.log(JSON.stringify(newNode));
       debouncedGetTree();
     });
     chrome.bookmarks.onMoved.addListener((id, moveInfo) => {
-      console.log('TCL ~ file: Bookmarks.tsx ~ line 65 ~ id', id);
+      console.log('chrome.bookmarks.onMoved', id);
       console.log(JSON.stringify(moveInfo));
       debouncedGetTree();
     });
     chrome.bookmarks.onChanged.addListener((id, changeInfo) => {
-      console.log('TCL ~ file: Bookmarks.tsx ~ line 70 ~ id', id);
+      console.log('chrome.bookmarks.onChanged', id);
       console.log(JSON.stringify(changeInfo));
       debouncedGetTree();
     });
     chrome.bookmarks.onChildrenReordered.addListener((id, reorderInfo) => {
-      console.log('TCL ~ file: Bookmarks.tsx ~ line 75 ~ id', id);
+      console.log('chrome.bookmarks.onChildrenReordered', id);
       console.log(JSON.stringify(reorderInfo));
       debouncedGetTree();
     });
     chrome.bookmarks.onRemoved.addListener((id, removeInfo) => {
-      console.log('TCL ~ file: Bookmarks.tsx ~ line 81 ~ id', id);
+      console.log('chrome.bookmarks.onRemoved', id);
       console.log(JSON.stringify(removeInfo));
       debouncedGetTree();
     });
@@ -100,9 +106,9 @@ export default function Bookmarks(): JSX.Element {
     setDraggedNode(null);
     if (event.over?.id != null) {
       const dragId = extractId(event.active.id);
-      console.log('TCL ~ file: Bookmarks.tsx ~ line 103 ~ dragId', dragId);
+      console.log('handleDragEnd: dragId', dragId);
       const dropId = extractId(event.over.id);
-      console.log('TCL ~ file: Bookmarks.tsx ~ line 105 ~ dropId', dropId);
+      console.log('handleDragEnd: dropId', dropId);
       const dragNode = flatNodes.find((n) => n.id === dragId);
       const dropNode = flatNodes.find((n) => n.id === dropId);
 
@@ -139,7 +145,7 @@ export default function Bookmarks(): JSX.Element {
     <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
       <CssBaseline />
 
-      <NodeDialog />
+      <NodeCrudDialog />
       <MoveToDialog />
 
       {appBar}
@@ -149,13 +155,14 @@ export default function Bookmarks(): JSX.Element {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         onDragCancel={handleDragCancel}
+        layoutMeasuring={{ strategy: LayoutMeasuringStrategy.Always }}
       >
         <Box className="bookmarks-container">
           <Container className="left-panel">
             <Paper>
               <List dense>
                 {nodes[0]?.children?.map((n) => (
-                  <Node isRoot node={n} key={n.id} suffix="L" />
+                  <Node isRoot isDraggable isDroppable={false} node={n} key={n.id} suffix="L" />
                 ))}
               </List>
             </Paper>
@@ -165,7 +172,7 @@ export default function Bookmarks(): JSX.Element {
             <Paper>
               <List dense>
                 {nodes[0]?.children?.map((n) => (
-                  <Node isRoot node={n} key={n.id} suffix="R" />
+                  <Node isRoot isDraggable={false} isDroppable node={n} key={n.id} suffix="R" />
                 ))}
               </List>
             </Paper>

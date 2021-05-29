@@ -4,11 +4,11 @@ import MoveToDialogData from '../bookmarks/components/dialogs/MoveToDialog';
 export interface ViewStore {
   theme: 'light' | 'dark';
   foldersOpen: Set<string>;
-  nodeDialog: NodeDialogData;
+  nodeCrudDialog: nodeCrudDialogData;
   moveToDialog: MoveToDialogData;
 }
 
-interface NodeDialogData {
+interface nodeCrudDialogData {
   isOpen: boolean;
   mode?: 'create' | 'update' | 'delete';
   type?: 'folder' | 'link';
@@ -29,7 +29,7 @@ interface OpenFolderData {
 const initialState = {
   theme: 'light',
   foldersOpen: new Set(),
-  nodeDialog: {
+  nodeCrudDialog: {
     isOpen: false,
   },
   moveToDialog: {
@@ -42,6 +42,7 @@ const viewSlice = createSlice({
   initialState,
   reducers: {
     restorePreviousTheme(state) {
+      console.log('restorePreviousTheme');
       const prevTheme = localStorage.getItem('theme');
       if (prevTheme === 'light' || prevTheme === 'dark') {
         state.theme = prevTheme;
@@ -51,25 +52,26 @@ const viewSlice = createSlice({
     },
 
     toggleTheme(state) {
+      console.log('toggleTheme');
       state.theme = state.theme === 'light' ? 'dark' : 'light';
       localStorage.setItem('theme', state.theme);
     },
 
     toggleFolderOpen(state, action: PayloadAction<OpenFolderData>) {
-      console.log('TCL ~ file: viewSlice.ts ~ line 58 ~ action', action);
+      console.log('toggleFolderOpen', action);
       if (action.payload.uniqueId != null) {
         if (action.payload.isOpen) state.foldersOpen.add(action.payload.uniqueId);
         else state.foldersOpen.delete(action.payload.uniqueId);
       }
     },
 
-    setNodeDialog(state, action: PayloadAction<NodeDialogData>) {
-      console.log('TCL ~ file: viewSlice.ts ~ line 66 ~ action', action);
-      state.nodeDialog = action.payload;
+    setNodeCrudDialog(state, action: PayloadAction<nodeCrudDialogData>) {
+      console.log('setNodeCrudDialog', action);
+      state.nodeCrudDialog = action.payload;
     },
 
     setMoveToDialog(state, action: PayloadAction<MoveToDialogData>) {
-      console.log('TCL ~ file: viewSlice.ts ~ line 66 ~ action', action);
+      console.log('setMoveToDialog', action);
       state.moveToDialog = action.payload;
     },
   },
@@ -78,7 +80,7 @@ const viewSlice = createSlice({
 export const {
   restorePreviousTheme,
   toggleTheme,
-  setNodeDialog,
+  setNodeCrudDialog,
   setMoveToDialog,
   toggleFolderOpen,
 } = viewSlice.actions;

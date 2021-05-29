@@ -5,7 +5,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { createNode, deleteNode, editNode } from '../../../redux/bookmarksSlice';
 import store, { RootStore } from '../../../redux/store';
-import { setNodeDialog } from '../../../redux/viewSlice';
+import { setNodeCrudDialog } from '../../../redux/viewSlice';
 import { CreateOperation, DeleteOperation, EditOperation } from '../../../types/operations';
 import log from '../../../utils/log';
 import BaseDialog from './BaseDialog';
@@ -24,13 +24,13 @@ const useStyles = makeStyles(() =>
 
 const EMPTY_EDITING_DATA = { title: '', url: '' };
 
-export default function NodeDialog(): JSX.Element {
+export default function NodeCrudDialog(): JSX.Element {
   const styles = useStyles();
   const { isOpen, mode, parentId, type, node } = useSelector(
-    (state: RootStore) => state.view.nodeDialog,
+    (state: RootStore) => state.view.nodeCrudDialog,
   );
   console.log(
-    'TCL ~ file: NodeDialog.tsx ~ line 30 ~ isOpen, mode, parentId, type, node',
+    'nodeCrudDialog: isOpen, mode, parentId, type, node',
     isOpen,
     mode,
     parentId,
@@ -57,7 +57,7 @@ export default function NodeDialog(): JSX.Element {
   };
 
   const handleClose = () => {
-    store.dispatch(setNodeDialog({ isOpen: false }));
+    store.dispatch(setNodeCrudDialog({ isOpen: false }));
   };
 
   const handleConfirm = () => {
@@ -120,7 +120,7 @@ export default function NodeDialog(): JSX.Element {
     }
     const nodeType = type === 'folder' ? 'folder' : 'link';
     return `${operation} ${nodeType}`;
-  }, []);
+  }, [mode, type]);
 
   return (
     <BaseDialog isOpen={isOpen} onClose={handleClose} onExited={handleResetState}>

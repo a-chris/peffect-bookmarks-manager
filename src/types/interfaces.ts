@@ -3,19 +3,25 @@ export interface NodeProps {
   isRoot?: boolean;
 }
 
-export interface NodeWithSuffixProps extends NodeProps {
+export interface NodeWithSuffix extends NodeProps {
   suffix: string;
+}
+export interface NodeDndProps extends NodeWithSuffix {
+  isDraggable: boolean;
+  isDroppable: boolean;
 }
 
 export interface DragWrapperProps {
   id: string;
+  isDraggable: boolean;
   children: React.ReactNode;
 }
 export interface DropWrapperProps {
   id: string;
+  isDroppable: boolean;
   droppableChildren: (isOver: boolean) => React.ReactNode;
 }
-export interface BookmarkProps extends NodeWithSuffixProps {
+export interface BookmarkProps extends NodeWithSuffix {
   isOpen?: boolean;
   isOver?: boolean;
   onOpen?: () => void;

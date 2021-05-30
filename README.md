@@ -6,6 +6,14 @@ Once installed it will replace the default Chrome bookmarks manager available at
 
 ![screenshot](readme/screenshot.png)
 
+## Features
+
+- Simple UX, minimal UI
+- Dark theme (I was tired of losing my eyes while renaming tons of bookmarks at 01:00 A.M.)
+- UI organized in two column, each one with it's own navigation, that allows us to navigate different folders at the same time and to have a comprehensive vision of the bookmarks.
+- Drag-and-drop: the most simple way to manage your bookmarks. Just select a bookmark from the left column and move it into a folder of the right column.
+- Some advanced operations suchs as `Sort children` that allows to sort all the bookmarks inside a folder in alphabetical ascending order but keeping the folders at the top of the list, as it happens with the file explorer we use everyday. This actually changes the order of the bookmarks saved in your browser. There is also a **recursive** version.
+
 ## How to install and use it
 
 The application is too unstable to have a released version. If you want to give it a try you can clone this repository and build the project, here is the commands to run:
@@ -24,14 +32,6 @@ then
 3. select the `dist` folder of this project
 4. the app is now available at `chrome://bookmarks/`, if you can't see it then try to reload the page.
 
-## Features
-
-- Simple UX, minimal UI
-- Dark theme (I was tired of losing my eyes while renaming tons of bookmarks at 01:00 A.M.)
-- UI organized in two column, each one with it's own navigation, that allows us to navigate different folders at the same time and to have a comprehensive vision of the bookmarks.
-- Drag-and-drop: the most simple way to manage your bookmarks. Just select a bookmark from the left column and move it into a folder of the right column.
-- Some advanced operations suchs as `Sort children` that allows to sort all the bookmarks inside a folder in alphabetical ascending order but keeping the folders at the top of the list, as it happens with the file explorer we use everyday. This actually changes the order of the bookmarks saved in your browser. There is also a **recursive** version.
-
 ## TODO
 
 - [ ] Find a nice icon
@@ -46,11 +46,10 @@ then
 
 Opening multiple heavy nested bookmarks folders make the application unusable. This is much worse during the development and while using Linux machines (this one due to the missing hardware accelleration on my computer, I think)
 
-### Difficult debugging
+### Hard to debug
 
-Redux and React DevTools do not work while running this application in form of browser extension.
-A possible workaround is to run it as a React application and debug it at `http://localhost:5000/dev_bookmarks.html`.
-This approach works but I still have to found a solution for the chrome api imports which breaks the app.
+Redux and React DevTools do not work while running this application in form of browser extension, so a possible workaround is to run it as a React application and debug it at `http://localhost:5000/dev_bookmarks.html`.
+This approach works but it's not possible to modify any data of the bookmarks.
 
 ## Technical details
 
@@ -77,7 +76,7 @@ The app in development mode is much slower than the one in production mode.
 
 ### Working with the React application
 
-This is just a workaround to use the React and Redux DevTools, mostly to debug the drag-and-drop, so you can't execute operation on the bookmarks for real.
+This is just a workaround to use the React and Redux DevTools, mostly to debug the drag-and-drop, so you can't execute operation on the bookmarks for real because the bookmarks you can see are statically loaded from `mock/nodes.json`.
 
 Run:
 

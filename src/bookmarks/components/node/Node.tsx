@@ -17,8 +17,8 @@ import store, { RootStore } from '../../../redux/store';
 import { toggleFolderOpen } from '../../../redux/viewSlice';
 import { BookmarkProps, NodeDndProps } from '../../../types/interfaces';
 import { generateUniqueId } from '../../../utils/dndUtils';
-import Draggable from '../../dnd/Draggable';
-import Droppable from '../../dnd/Droppable';
+import Draggable from '../dnd/Draggable';
+import Droppable from '../dnd/Droppable';
 import StyledAvatar from '../StyledAvatar';
 import BookmarkMenu from './BookmarkMenu';
 

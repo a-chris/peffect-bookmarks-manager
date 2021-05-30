@@ -3,7 +3,7 @@ import { Chip, createStyles, makeStyles } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/Folder';
 import _ from 'lodash';
 import React from 'react';
-import { NodeDragOverlayProps } from '../../types/interfaces';
+import { NodeDragOverlayProps } from '../../../types/interfaces';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -25,7 +25,7 @@ export default function DraggedOverlay({ node }: NodeDragOverlayProps): JSX.Elem
           color="primary"
           className={styles.chip}
           label={label}
-          // avatar={node.url && <Avatar src={`chrome://favicon/${node.url}`} />}
+          // avatar={node.url && <Avatar src={getFavicon(node.url)} />}
           icon={node.url ? undefined : <FolderIcon />}
         />
       ) : null}

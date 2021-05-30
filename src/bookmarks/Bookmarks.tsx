@@ -35,9 +35,9 @@ import { extractId } from '../utils/dndUtils';
 import './Bookmarks.scss';
 import MoveToDialog from './components/dialogs/MoveToDialog';
 import NodeCrudDialog from './components/dialogs/NodeCrudDialog';
+import DraggedOverlay from './components/dnd/DraggedOverlay';
 import Node from './components/node/Node';
 import ThemeSwitcher from './components/ThemeSwitcher';
-import DraggedOverlay from './dnd/DraggedOverlay';
 
 const debouncedGetTree = _.debounce(() => {
   console.warn('getTree called');
@@ -62,27 +62,28 @@ export default function Bookmarks(): JSX.Element {
 
   useEffect(() => {
     /* TODO: Find a solution, this is called for each children re-sorted */
-    chrome.bookmarks.onCreated.addListener((id, newNode) => {
+    console.log(chrome);
+    chrome.bookmarks?.onCreated?.addListener((id, newNode) => {
       console.log('chrome.bookmarks.onCreated', id);
       console.log(JSON.stringify(newNode));
       debouncedGetTree();
     });
-    chrome.bookmarks.onMoved.addListener((id, moveInfo) => {
+    chrome.bookmarks?.onMoved?.addListener((id, moveInfo) => {
       console.log('chrome.bookmarks.onMoved', id);
       console.log(JSON.stringify(moveInfo));
       debouncedGetTree();
     });
-    chrome.bookmarks.onChanged.addListener((id, changeInfo) => {
+    chrome.bookmarks?.onChanged?.addListener((id, changeInfo) => {
       console.log('chrome.bookmarks.onChanged', id);
       console.log(JSON.stringify(changeInfo));
       debouncedGetTree();
     });
-    chrome.bookmarks.onChildrenReordered.addListener((id, reorderInfo) => {
+    chrome.bookmarks?.onChildrenReordered?.addListener((id, reorderInfo) => {
       console.log('chrome.bookmarks.onChildrenReordered', id);
       console.log(JSON.stringify(reorderInfo));
       debouncedGetTree();
     });
-    chrome.bookmarks.onRemoved.addListener((id, removeInfo) => {
+    chrome.bookmarks?.onRemoved?.addListener((id, removeInfo) => {
       console.log('chrome.bookmarks.onRemoved', id);
       console.log(JSON.stringify(removeInfo));
       debouncedGetTree();
@@ -155,7 +156,6 @@ export default function Bookmarks(): JSX.Element {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         onDragCancel={handleDragCancel}
-        layoutMeasuring={{ strategy: LayoutMeasuringStrategy.Always }}
       >
         <Box className="bookmarks-container">
           <Container className="left-panel">

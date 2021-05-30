@@ -1,6 +1,6 @@
 import { useDroppable } from '@dnd-kit/core';
 import React from 'react';
-import { DropWrapperProps } from '../../types/interfaces';
+import { DropWrapperProps } from '../../../types/interfaces';
 
 export default function Droppable({
   id,

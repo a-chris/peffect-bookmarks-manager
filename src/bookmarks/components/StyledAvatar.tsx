@@ -2,6 +2,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { createStyles, Theme, WithStyles, withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { NodeProps } from '../../types/interfaces';
+import getFavicon from '../../utils/faviconUtils';
 
 const StyledAvatar = withStyles((theme: Theme) =>
   createStyles({
@@ -14,7 +15,7 @@ const StyledAvatar = withStyles((theme: Theme) =>
   }),
 )((props: NodeProps & WithStyles) => {
   const { classes, node } = props;
-  return <Avatar className={classes.avatar} src={`chrome://favicon/${node.url}`} />;
+  return <Avatar className={classes.avatar} src={getFavicon(node.url)} />;
 });
 
 export default StyledAvatar;

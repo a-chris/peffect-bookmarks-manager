@@ -1,4 +1,4 @@
-import nodesJson from '../test/nodes.json';
+import nodesJson from '../mock/nodes.json';
 
 function isLocalhost() {
   return process.env.NODE_ENV === 'development' && window.location.href.includes('localhost');

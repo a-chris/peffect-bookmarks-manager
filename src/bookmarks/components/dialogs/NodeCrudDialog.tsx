@@ -7,7 +7,7 @@ import { createNode, deleteNode, editNode } from '../../../redux/bookmarksSlice'
 import store, { RootStore } from '../../../redux/store';
 import { setNodeCrudDialog } from '../../../redux/viewSlice';
 import { CreateOperation, DeleteOperation, EditOperation } from '../../../types/operations';
-import log from '../../../utils/log';
+import Logger from '../../../utils/logger';
 import BaseDialog from './BaseDialog';
 
 const useStyles = makeStyles(() =>
@@ -62,13 +62,13 @@ export default function NodeCrudDialog(): JSX.Element {
 
   const handleConfirm = () => {
     if (mode === 'create' && validate()) {
-      log('handleConfirm: create');
+      Logger.debug('handleConfirm: create');
       const createArgs = { parentId, index: 0, title: inputData.title, url: inputData.url };
       const createOperation = new CreateOperation(createArgs);
       store.dispatch(createNode(createOperation));
       handleClose();
     } else if (mode === 'update' && node != null && validate()) {
-      log('handleConfirm: update');
+      Logger.debug('handleConfirm: update');
       const changes = { title: inputData.title, url: '' };
       if (node.url) {
         // then this is a link
@@ -78,7 +78,7 @@ export default function NodeCrudDialog(): JSX.Element {
       store.dispatch(editNode(editOperation));
       handleClose();
     } else if (mode === 'delete' && node != null) {
-      log('handleConfirm: delete');
+      Logger.debug('handleConfirm: delete');
       const deleteOperation = new DeleteOperation(node);
       store.dispatch(deleteNode(deleteOperation));
       handleClose();

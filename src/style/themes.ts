@@ -1,42 +1,46 @@
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@mui/material/styles';
 import { primary } from './colors';
 
 // How to override Mui css properties: https://material-ui.com/customization/globals/#css
 const commonTheme = {
-  overrides: {
+  components: {
     MuiListItemText: {
-      primary: {
-        fontSize: '1rem',
+      styleOverrides: {
+        primary: {
+          fontSize: '1rem',
+        },
       },
     },
   },
 };
 
-export const darkTheme = createMuiTheme({
+export const darkTheme = createTheme({
   ...commonTheme,
   palette: {
-    type: 'dark',
+    mode: 'dark',
     primary,
   },
-  overrides: {
-    ...commonTheme.overrides,
+  components: {
+    ...commonTheme.components,
     MuiFormLabel: {
-      focused: {},
-      root: {
-        color: 'white',
-        '&$focused': {
+      styleOverrides: {
+        focused: {},
+        root: {
           color: 'white',
-          fontWeight: 'bold',
+          '&$focused': {
+            color: 'white',
+            fontWeight: 'bold',
+          },
         },
       },
     },
   },
 });
 
-export const lightTheme = createMuiTheme({
-  ...commonTheme,
+export const lightTheme = createTheme({
   palette: {
-    type: 'light',
+    mode: 'light',
     primary,
   },
+  ...commonTheme,
 });

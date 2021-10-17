@@ -1,5 +1,5 @@
-import { IconButton, Menu, MenuItem } from '@material-ui/core';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
 import React, { useCallback, useState } from 'react';
 
 interface MenuItemProps {
@@ -29,18 +29,20 @@ export default function StyledMenu({ items }: MenuProps): JSX.Element {
 
   return (
     <div>
-      <IconButton
-        aria-label="more"
-        aria-controls="long-menu"
-        aria-haspopup="true"
-        size="small"
-        onClick={toggleMenu}
-      >
-        <MoreVertIcon />
-      </IconButton>
+      <Tooltip title={'Actions'}>
+        <IconButton
+          aria-label="more"
+          aria-controls="long-menu"
+          aria-haspopup="true"
+          size="small"
+          onClick={toggleMenu}
+        >
+          <MoreVertIcon />
+        </IconButton>
+      </Tooltip>
       <Menu
         anchorEl={anchorEl}
-        getContentAnchorEl={null}
+        // getContentAnchorEl={null}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'center',

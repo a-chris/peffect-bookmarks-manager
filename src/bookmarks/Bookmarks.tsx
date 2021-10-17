@@ -2,11 +2,11 @@ import {
   DndContext,
   DragEndEvent,
   DragStartEvent,
-  LayoutMeasuringStrategy,
   MouseSensor,
   useSensor,
-  useSensors,
+  useSensors
 } from '@dnd-kit/core';
+import MenuIcon from '@mui/icons-material/Menu';
 import {
   AppBar,
   Box,
@@ -17,9 +17,8 @@ import {
   Paper,
   ThemeProvider,
   Toolbar,
-  Typography,
-} from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
+  Typography
+} from '@mui/material';
 import _ from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';

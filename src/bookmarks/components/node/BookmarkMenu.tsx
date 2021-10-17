@@ -1,5 +1,5 @@
-import { IconButton, Tooltip } from '@material-ui/core';
-import SortIcon from '@material-ui/icons/Sort';
+import SortIcon from '@mui/icons-material/Sort';
+import { IconButton, Tooltip } from '@mui/material';
 import React, { useCallback, useMemo } from 'react';
 import { recursiveSortChildren, sortChildren } from '../../../redux/bookmarksSlice';
 import store from '../../../redux/store';

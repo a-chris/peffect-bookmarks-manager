@@ -1,6 +1,4 @@
-import { Button, DialogActions, DialogContent, TextField } from '@material-ui/core';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
+import { Button, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { createNode, deleteNode, editNode } from '../../../redux/bookmarksSlice';
@@ -10,22 +8,9 @@ import { CreateOperation, DeleteOperation, EditOperation } from '../../../types/
 import Logger from '../../../utils/logger';
 import BaseDialog from './BaseDialog';
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    input_container: {
-      display: 'flex',
-      flexDirection: 'column',
-    },
-    input_field: {
-      marginBottom: '20px',
-    },
-  }),
-);
-
 const EMPTY_EDITING_DATA = { title: '', url: '' };
 
 export default function NodeCrudDialog(): JSX.Element {
-  const styles = useStyles();
   const { isOpen, mode, parentId, type, node } = useSelector(
     (state: RootStore) => state.view.nodeCrudDialog,
   );
@@ -123,9 +108,9 @@ export default function NodeCrudDialog(): JSX.Element {
   }, [mode, type]);
 
   return (
-    <BaseDialog isOpen={isOpen} onClose={handleClose} onExited={handleResetState}>
+    <BaseDialog isOpen={isOpen} onClose={handleClose}>
       <DialogTitle>{title}</DialogTitle>
-      <DialogContent className={styles.input_container}>
+      <DialogContent sx={{ display: 'flex', flexDirection: 'column' }}>
         {mode === 'delete' ? (
           <>Are you sure you want to delete?</>
         ) : mode === 'create' || mode === 'update' ? (
@@ -134,7 +119,6 @@ export default function NodeCrudDialog(): JSX.Element {
               required
               label="Title"
               variant="filled"
-              className={styles.input_field}
               name="title"
               value={inputData.title}
               onChange={handleChange}
@@ -144,7 +128,7 @@ export default function NodeCrudDialog(): JSX.Element {
                 required
                 label="URL"
                 variant="filled"
-                className={styles.input_field}
+                sx={{ mt: '30px' }}
                 name="url"
                 value={inputData.url}
                 onChange={handleChange}

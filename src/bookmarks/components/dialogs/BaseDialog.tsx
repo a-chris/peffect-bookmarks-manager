@@ -1,28 +1,15 @@
-import Dialog from '@material-ui/core/Dialog';
+import Dialog from '@mui/material/Dialog';
 import React from 'react';
 
 interface BaseDialogProps {
-  isOpen: boolean;
   children: React.ReactNode;
+  isOpen: boolean;
   onClose: () => void;
-  onExited?: () => void;
 }
 
-export default function BaseDialog({
-  isOpen,
-  onClose,
-  onExited,
-  children,
-}: BaseDialogProps): JSX.Element {
+export default function BaseDialog({ isOpen, onClose, children }: BaseDialogProps): JSX.Element {
   return (
-    <Dialog
-      fullWidth
-      disableEscapeKeyDown
-      disableBackdropClick
-      open={isOpen}
-      onClose={onClose}
-      onExited={onExited}
-    >
+    <Dialog fullWidth disableEscapeKeyDown open={isOpen} onClose={onClose}>
       {children}
     </Dialog>
   );

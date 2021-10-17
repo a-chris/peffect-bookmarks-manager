@@ -7,13 +7,13 @@ import {
   EditOperation,
   MoveOperation,
   Operation,
-  SortChildrenOperation,
+  SortChildrenOperation
 } from '../types/operations';
 import {
   flatDeepNode,
   flatDeepNodeNoProxy,
   sortChildrenByNameAndMove,
-  sortNodeChildrenByName,
+  sortNodeChildrenByName
 } from '../utils/nodeUtils';
 
 export interface BookmarksStore {
@@ -114,7 +114,7 @@ const bookmarksSlice = createSlice({
           return await move(moveOperation.node.id, moveOperation.destinationArgs);
         }),
       )
-        .then(() => toast.success(`Sorted ${node.title}.`))
+        .then(() => toast.success(`Sorted folder ${node.title}.`))
         .catch(() => toast.error(`Error while sorting ${node.title}.`));
     },
 
@@ -123,7 +123,7 @@ const bookmarksSlice = createSlice({
       const { node } = action.payload;
 
       sortChildrenByNameAndMove(node);
-      toast.success(`Recursively sorted ${node.title} and all its children.`);
+      toast.success(`Recursively sorted ${node.title} and all its sub folders.`);
     },
 
     applyOperations(state) {

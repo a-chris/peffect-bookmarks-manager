@@ -1,6 +1,6 @@
-import { IconButton } from '@material-ui/core';
-import Brightness4Icon from '@material-ui/icons/Brightness4';
-import BrightnessHighIcon from '@material-ui/icons/BrightnessHigh';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import BrightnessHighIcon from '@mui/icons-material/BrightnessHigh';
+import IconButton from '@mui/material/IconButton';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import store, { RootStore } from '../../redux/store';

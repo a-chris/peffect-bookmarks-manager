@@ -1,5 +1,11 @@
-import { Button, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
+import {
+  Autocomplete,
+  Button,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField
+} from '@mui/material';
 import _ from 'lodash';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';

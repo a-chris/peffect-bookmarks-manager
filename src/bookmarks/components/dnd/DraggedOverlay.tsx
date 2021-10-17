@@ -1,21 +1,11 @@
 import { DragOverlay } from '@dnd-kit/core';
-import { Chip, createStyles, makeStyles } from '@material-ui/core';
-import FolderIcon from '@material-ui/icons/Folder';
+import FolderIcon from '@mui/icons-material/Folder';
+import { Chip } from '@mui/material';
 import _ from 'lodash';
 import React from 'react';
 import { NodeDragOverlayProps } from '../../../types/interfaces';
 
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    chip: {
-      padding: theme.spacing(2),
-    },
-  }),
-);
-
 export default function DraggedOverlay({ node }: NodeDragOverlayProps): JSX.Element {
-  const styles = useStyles();
-
   const label = _.truncate(node?.title || node?.url || '');
 
   return (
@@ -23,7 +13,7 @@ export default function DraggedOverlay({ node }: NodeDragOverlayProps): JSX.Elem
       {node ? (
         <Chip
           color="primary"
-          className={styles.chip}
+          sx={{ p: 2 }}
           label={label}
           // avatar={node.url && <Avatar src={getFavicon(node.url)} />}
           icon={node.url ? undefined : <FolderIcon />}

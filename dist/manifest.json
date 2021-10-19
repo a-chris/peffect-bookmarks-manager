@@ -7,7 +7,7 @@
     "bookmarks": "bookmarks.html"
   },
   "browser_action": {
-    "default_icon": "icon128.png",
+    "default_icon": "star.png",
     "default_popup": "popup.html"
   },
 
@@ -16,9 +16,9 @@
     "persistent": false
   },
   "icons": {
-    "16": "icon16.png",
-    "48": "icon48.png",
-    "128": "icon128.png"
+    "16": "star.png",
+    "48": "star.png",
+    "128": "star.png"
   },
 
   "permissions": ["bookmarks", "chrome://favicon/"],

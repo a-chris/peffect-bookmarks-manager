@@ -7,7 +7,7 @@ import StyledAvatar from '../StyledAvatar';
 import BookmarkMenu from './BookmarkMenu';
 import { StyledListItemButton } from './Common';
 
-export default function NodeLink({ node, isOver }: BookmarkProps): JSX.Element {
+const InternalNodeLink = ({ node, isOver }: BookmarkProps): JSX.Element => {
   return (
     <>
       {isOver && <Divider />}
@@ -30,7 +30,11 @@ export default function NodeLink({ node, isOver }: BookmarkProps): JSX.Element {
       </StyledListItemButton>
     </>
   );
-}
+};
+
+const NodeLink = React.memo(InternalNodeLink);
+
+export default NodeLink;
 
 export const ListItemTitle = styled(ListItemText)`
   padding-top: 0;

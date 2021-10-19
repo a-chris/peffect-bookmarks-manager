@@ -3,9 +3,19 @@ import React from 'react';
 import { NodeProps } from '../../types/interfaces';
 import getFavicon from '../../utils/faviconUtils';
 
-export default function StyledAvatar(props: NodeProps): JSX.Element {
+const InternalStyledAvatar = (props: NodeProps): JSX.Element => {
   const { node } = props;
-  const faviconUrl = getFavicon(node.url);
+  const faviconUrl = getFavicon(true, node.url);
 
-  return <Avatar sx={{ width: '1rem', height: '1rem', mx: 2 }} src={faviconUrl} />;
-}
+  return (
+    <Avatar
+      sx={{ width: '1.5rem', height: '1.5rem', mx: 2 }}
+      alt={node.title[0]}
+      src={faviconUrl}
+    />
+  );
+};
+
+const StyledAvatar = React.memo(InternalStyledAvatar);
+
+export default StyledAvatar;

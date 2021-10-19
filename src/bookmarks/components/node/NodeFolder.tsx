@@ -7,13 +7,13 @@ import { BookmarkProps } from '../../../types/interfaces';
 import BookmarkMenu from './BookmarkMenu';
 import { StyledListItemButton } from './Common';
 
-export default function NodeFolder({
+const InternalNodeFolder = ({
   node,
   isOpen,
   isOver,
   isRoot,
   onOpen,
-}: BookmarkProps): JSX.Element {
+}: BookmarkProps): JSX.Element => {
   const hasChildren = node.children?.length != null && node.children.length > 0;
 
   return (
@@ -32,4 +32,8 @@ export default function NodeFolder({
       <BookmarkMenu node={node} nodeType={isRoot ? 'root_folder' : 'folder'} />
     </StyledListItemButton>
   );
-}
+};
+
+const NodeFolder = React.memo(InternalNodeFolder);
+
+export default NodeFolder;

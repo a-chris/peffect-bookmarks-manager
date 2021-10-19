@@ -42,7 +42,6 @@ export default function StyledMenu({ items }: MenuProps): JSX.Element {
       </Tooltip>
       <Menu
         anchorEl={anchorEl}
-        // getContentAnchorEl={null}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'center',
